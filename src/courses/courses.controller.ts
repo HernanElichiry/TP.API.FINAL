@@ -53,11 +53,10 @@ export class CoursesController {
 
   @Delete('/:id')
  async remove(@Param('id', new ParseIntPipe({errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE})) id: number):Promise<string> {
- 
     return this.coursesService.deleteCourseById(id);
   }
 
-  @Get('/byCategory')
+  @Get('search/byCategory')
   async getCoursesByCategory(@Query('category') category: string): Promise<Course[]> {
     return this.coursesService.getCoursesByCategory(category);
   }

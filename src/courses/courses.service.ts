@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException} from '@nestjs/common';
+import { Injectable, NotFoundException, InternalServerErrorException} from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { Course } from './entities/course.entity';
 
@@ -11,14 +11,14 @@ export class CoursesService {
 
   async getAll(): Promise<Course[]> {
     const res = await fetch(this.baseURL);
-    const parsed = await res.json(); // Usa await aquí
+    const parsed = await res.json(); 
     return parsed;
   }
 
   async getOneById(id: number): Promise<Course> {
     const res = await fetch(`${this.baseURL}/${id}`);
     const parsed = await res.json();
-    if (Object.keys(parsed).length) return parsed; 
+    if (Object.keys(parsed).length) return parsed;   // Verifica si el objeto parsed tiene claves
     //track no existe: lanzamos una excepción al controller
     throw new NotFoundException(`Track con id ${id} no existe`);
     
@@ -47,43 +47,37 @@ export class CoursesService {
   async updateAll(id: number, updateCourseDto: UpdateCourseDto): Promise<Course> {
     const courseToUpdate = await this.getOneById(id);
     
-    if (!courseToUpdate) {
-      throw new NotFoundException("Ese curso no existe");
-    } 
-
-    const updatedCourse = { ...courseToUpdate, ...updateCourseDto };
-
+    const updatedCourse = { ...courseToUpdate, ...updateCourseDto }; //operación que crea un nuevo objeto combinando dos objetos:
+  
     const res = await fetch(`${this.baseURL}/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedCourse),
     });
-
+  
     if (!res.ok) {
-      throw new Error('Error al actualizar el curso');
+      throw new InternalServerErrorException('Error al actualizar el curso');
     }
-
+  
     const parsed = await res.json();
     return parsed;
   }
-
-
   
   async update(id: number, updateCourseDto: UpdateCourseDto): Promise<Course> {
     const courseToUpdate = await this.getOneById(id);
     
-    if (!courseToUpdate) {
-      throw new NotFoundException("Ese curso no existe");
-    } 
-
     const updatedCourse = { ...courseToUpdate, ...updateCourseDto };
-
+  
     const res = await fetch(`${this.baseURL}/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedCourse),
     });
-
+  
+    if (!res.ok) {
+      throw new InternalServerErrorException('Error al actualizar el curso');
+    }
+  
     const parsed = await res.json();
     return parsed;
   }
