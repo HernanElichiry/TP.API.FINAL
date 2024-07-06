@@ -15,11 +15,16 @@ export class CoursesController {
     return this.coursesService.getAll();
   }
 
-  @Get('/:id')
+  @Get(':id')
+  async getOne(@Param('id', new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number): Promise<Course> {
+    return this.coursesService.getOneById(id);
+  }
+
+  /*@Get(':id')
   async getOne(@Param('id', new ParseIntPipe({errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE})) id: number): Promise<Course> {
       return this.coursesService.getOneById(id); //este parseintpipe convierte string en numero y no acepta caracteres
 
-  }
+  }*/
 
 // Podríamos hacerlo “a mano”, tal como hicimos en el controlador, pero resulta que Nest JS nos ofrece una cantidad de excepciones
 //útiles para devolver errores pre configurados (BadRequestException, NotFoundException, ForbiddenException, etc.)
@@ -31,7 +36,7 @@ export class CoursesController {
   }
  
 
-  @Patch('/:id')
+  @Patch(':id')
   async update(@Param('id', new ParseIntPipe({errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE})) id: number,
    @Body() updateCourseDto: UpdateCourseDto): Promise<Course> {
     const update = this.coursesService.update(id, updateCourseDto);
@@ -40,7 +45,7 @@ export class CoursesController {
 
   }
 
-  @Put('/:id')
+  @Put(':id')
   async updateAll(
     @Param('id', new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number,
     @Body() updateCourseDto: UpdateCourseDto,
@@ -51,7 +56,7 @@ export class CoursesController {
   }
   
 
-  @Delete('/:id')
+  @Delete(':id')
  async remove(@Param('id', new ParseIntPipe({errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE})) id: number):Promise<string> {
     return this.coursesService.deleteCourseById(id);
   }

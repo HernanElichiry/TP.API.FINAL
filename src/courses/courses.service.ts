@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, InternalServerErrorException} from '@nestjs/common';
+import { Injectable, NotFoundException, InternalServerErrorException, BadRequestException} from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { Course } from './entities/course.entity';
 
@@ -15,14 +15,29 @@ export class CoursesService {
     return parsed;
   }
 
-  async getOneById(id: number): Promise<Course> {
+
+  /*async getOneById(id: number): Promise<Course> {
     const res = await fetch(`${this.baseURL}/${id}`);
     const parsed = await res.json();
     if (Object.keys(parsed).length) return parsed;   // Verifica si el objeto parsed tiene claves
     //track no existe: lanzamos una excepción al controller
     throw new NotFoundException(`Track con id ${id} no existe`);
     
-  }
+  }*/
+
+  async getOneById(id: number): Promise<Course> {
+      if (isNaN(id) || !Number.isInteger(id) || id <= 0) {
+        throw new BadRequestException('Invalid ID provided');
+      }
+    
+      const res = await fetch(`${this.baseURL}/${id}`);
+      if (!res.ok) {
+        throw new NotFoundException(`Course with ID ${id} not found`);
+      }
+    
+      const parsed = await res.json();
+      return parsed;
+    }
 
   private async setId(): Promise<string> {
     const courses = await this.getAll();
@@ -91,18 +106,32 @@ export class CoursesService {
       if (res.status === 404) {
         throw new NotFoundException(`Course with ID ${id} not found`);
       }
-      throw new Error('Failed to delete course');
+      throw new Error("Failed to delete course");
     }
 
     const parsed = await res.json();
     return parsed;
   }
 
-  async getCoursesByCategory(category: string): Promise<Course[]> {
+
+ async getCoursesByCategory(category: string): Promise<Course[]> {
+    // Validar que la categoría no esté vacía
+    if (!category) {
+      throw new BadRequestException('parametro Category es requerido');
+
+    }
+
     const res = await fetch(`${this.baseURL}?category=${category}`);
     const parsed = await res.json();
     return parsed;
-  }
+  
+ }
+  
+  /*async getCoursesByCategory(category: string): Promise<Course[]> {
+    const res = await fetch(`${this.baseURL}?category=${category}`);
+    const parsed = await res.json();
+    return parsed;
+  }*/
   
 
 
