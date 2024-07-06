@@ -17,18 +17,9 @@ export class CoursesController {
 
   @Get(':id')
   async getOne(@Param('id', new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number): Promise<Course> {
-    return this.coursesService.getOneById(id);
+    return this.coursesService.getOneById(id);//este parseintpipe convierte string en numero y no acepta caracteres
+
   }
-
-  /*@Get(':id')
-  async getOne(@Param('id', new ParseIntPipe({errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE})) id: number): Promise<Course> {
-      return this.coursesService.getOneById(id); //este parseintpipe convierte string en numero y no acepta caracteres
-
-  }*/
-
-// Podríamos hacerlo “a mano”, tal como hicimos en el controlador, pero resulta que Nest JS nos ofrece una cantidad de excepciones
-//útiles para devolver errores pre configurados (BadRequestException, NotFoundException, ForbiddenException, etc.)
-
 
   @Post('')
  async create(@Body()createCourse: CreateCourseDto): Promise<Course> {

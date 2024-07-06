@@ -127,11 +127,6 @@ export class CoursesService {
   
  }
   
-  /*async getCoursesByCategory(category: string): Promise<Course[]> {
-    const res = await fetch(`${this.baseURL}?category=${category}`);
-    const parsed = await res.json();
-    return parsed;
-  }*/
   
 
 
