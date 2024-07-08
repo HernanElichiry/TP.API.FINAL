@@ -16,20 +16,7 @@ export class CoursesService {
   }
 
 
-  /*async getOneById(id: number): Promise<Course> {
-    const res = await fetch(`${this.baseURL}/${id}`);
-    const parsed = await res.json();
-    if (Object.keys(parsed).length) return parsed;   // Verifica si el objeto parsed tiene claves
-    //track no existe: lanzamos una excepción al controller
-    throw new NotFoundException(`Track con id ${id} no existe`);
-    
-  }*/
-
   async getOneById(id: number): Promise<Course> {
-      if (isNaN(id) || !Number.isInteger(id) || id <= 0) {
-        throw new BadRequestException('Invalid ID provided');
-      }
-    
       const res = await fetch(`${this.baseURL}/${id}`);
       if (!res.ok) {
         throw new NotFoundException(`Course with ID ${id} not found`);
@@ -41,7 +28,7 @@ export class CoursesService {
 
   private async setId(): Promise<string> {
     const courses = await this.getAll();
-    const ids = courses.map(item => parseInt(item.id, 10)); // Convertir los IDs a números para encontrar el mayor
+    const ids = courses.map(item => parseInt(item.id)); // Convertir los IDs a números para encontrar el mayor
     const maxId = ids.length > 0 ? Math.max(...ids) : 0; // Encontrar el ID más grande en la matriz de IDs
     return (maxId + 1).toString(); // Convertir el nuevo ID a string
   }
@@ -78,7 +65,7 @@ export class CoursesService {
     return parsed;
   }
   
-  async update(id: number, updateCourseDto: UpdateCourseDto): Promise<Course> {
+  async partialUpdate(id: number, updateCourseDto: UpdateCourseDto): Promise<Course> {
     const courseToUpdate = await this.getOneById(id);
     
     const updatedCourse = { ...courseToUpdate, ...updateCourseDto };
@@ -113,21 +100,56 @@ export class CoursesService {
     return parsed;
   }
 
-
- async getCoursesByCategory(category: string): Promise<Course[]> {
+// http://localhost:3000/courses/search/byCategory?category=
+/* async getCoursesByCategory(category: string): Promise<Course[]> {
     // Validar que la categoría no esté vacía
     if (!category) {
       throw new BadRequestException('parametro Category es requerido');
-
     }
-
+    
     const res = await fetch(`${this.baseURL}?category=${category}`);
     const parsed = await res.json();
+     // Verificar si se encontraron cursos
+  if (parsed.length === 0) {
+    throw new NotFoundException(`No se encontraron cursos para la categoría: ${category}`);
+  }
+
+  
     return parsed;
   
- }
+ }*/
+
+ async getCoursesByCategory(category: string): Promise<Course[]> {
+  // Validar que el campo category no este vacío
+  if (!category) {
+    throw new BadRequestException('El parámetro "category" es requerido');
+  }
+
+  const res = await fetch(this.baseURL); 
+  const courses: Course[] = await res.json();
+
+  // Normalizar la categoría para comparación insensible a mayúsculas/minúsculas y acentos
+  const normalizedCategory = this.normalizeString(category);
+
+  // Filtrar los cursos por categoría normalizada
+  const filteredCourses = courses.filter(course => 
+    this.normalizeString(course.category) === normalizedCategory
+  );
+
+  // Verificar si se encontraron cursos
+  if (filteredCourses.length === 0) {
+    throw new NotFoundException(`No se encontraron cursos para la categoría: ${category}`);
+  }
+
+  return filteredCourses;
+}
+
+// Método para normalizar strings
+private normalizeString(string: string): string {
+  return string.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
   
-  
+
 
 
 }

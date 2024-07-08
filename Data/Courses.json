@@ -277,23 +277,9 @@
     },
     {
       "id": "19",
-      "title": "Fundamentos de Marketing Digital para alienigenas",
-      "description": "Comprende los conceptos y estrategias clave del marketing digital para mejorar tu presencia en línea.",
-      "instructor": "José Fernández",
-      "duration": 20,
-      "platform": "Coursera",
-      "rating": 4.6,
-      "category": "Marketing",
-      "topics": [
-        "Marketing Digital",
-        "SEO",
-        "Redes Sociales"
-      ]
-    },
-    {
-      "title": "Diseño de Jardines Microscopicos alienigenas",
-      "description": "Aprende a diseñar y mantener jardines hermosos y sostenibles unicamente visibles en microscopio.",
-      "instructor": "Hernan Elichiry",
+      "title": "Diseño de Gnomos de Jardin",
+      "description": "Aprende a diseñar y mantener jardines hermosos y sostenibles.",
+      "instructor": "Javier Morales",
       "duration": 25,
       "platform": "Skillshare",
       "rating": 4.7,
@@ -302,8 +288,7 @@
         "Diseño de Jardines",
         "Paisajismo",
         "Plantas"
-      ],
-      "id": "20"
+      ]
     }
   ]
 }

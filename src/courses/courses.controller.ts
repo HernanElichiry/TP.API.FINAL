@@ -9,7 +9,7 @@ import { Course } from './entities/course.entity';
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
  
- 
+  //manejador de ruta
   @Get('')
   async getAllCourses(): Promise<Course[]> {
     return this.coursesService.getAll();
@@ -18,8 +18,7 @@ export class CoursesController {
   @Get(':id')
   async getOne(@Param('id', new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number): Promise<Course> {
     return this.coursesService.getOneById(id);//este parseintpipe convierte string en numero y no acepta caracteres
-
-  }
+ }
 
   @Post('')
  async create(@Body()createCourse: CreateCourseDto): Promise<Course> {
@@ -30,7 +29,7 @@ export class CoursesController {
   @Patch(':id')
   async update(@Param('id', new ParseIntPipe({errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE})) id: number,
    @Body() updateCourseDto: UpdateCourseDto): Promise<Course> {
-    const update = this.coursesService.update(id, updateCourseDto);
+    const update = this.coursesService.partialUpdate(id, updateCourseDto);
 
     return update;
 
@@ -39,14 +38,11 @@ export class CoursesController {
   @Put(':id')
   async updateAll(
     @Param('id', new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number,
-    @Body() updateCourseDto: UpdateCourseDto,
-  ): Promise<Course> {
+    @Body() updateCourseDto: UpdateCourseDto,): Promise<Course> {
     const update =  this.coursesService.updateAll(id, updateCourseDto);
-    return update;
-    
+    return update;  
   }
   
-
   @Delete(':id')
  async remove(@Param('id', new ParseIntPipe({errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE})) id: number):Promise<string> {
     return this.coursesService.deleteCourseById(id);
